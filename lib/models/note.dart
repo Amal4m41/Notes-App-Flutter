@@ -12,6 +12,7 @@ class Note {
     required this.createdTime,
   });
 
+  //Converts the note object to a map/json.
   Map<String, Object?> toJson() => {
         NoteFields.id: id,
         NoteFields.title: title,
@@ -19,6 +20,7 @@ class Note {
         NoteFields.createdTime: createdTime.toIso8601String(),
       };
 
+  //Converts the json/map object to a note object
   static Note fromJson({required Map json}) {
     return Note(
       id: json["id"] as int?,
