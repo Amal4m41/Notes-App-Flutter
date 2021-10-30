@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:notes_app/components/capsule_text_border.dart';
 import 'package:notes_app/components/note_screen_template.dart';
@@ -7,28 +6,26 @@ import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
-class CreateNoteScreen extends StatefulWidget {
-  static const String id = "CreateNoteScreen";
+class EditNoteScreen extends StatefulWidget {
+  static const String id = "EditNoteScreen";
 
-  final String? title;
-  final String? description;
+  final Note note;
 
-  const CreateNoteScreen({this.title = null, this.description = null});
+  EditNoteScreen({required this.note});
 
   @override
-  State<CreateNoteScreen> createState() => _CreateNoteScreenState();
+  _EditNoteScreenState createState() => _EditNoteScreenState();
 }
 
-class _CreateNoteScreenState extends State<CreateNoteScreen> {
-  String? title;
-  String? description;
+class _EditNoteScreenState extends State<EditNoteScreen> {
+  late String title;
+  late String description;
 
   @override
   void initState() {
     super.initState();
-
-    title = widget.title;
-    description = widget.description;
+    title = widget.note.title;
+    description = widget.note.description;
   }
 
   @override
@@ -45,24 +42,33 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
               Navigator.pop(context);
             },
           ),
+          Expanded(
+            child: Container(),
+          ),
           InkWell(
-            child: CapsuleTextBorder(text: "Save"),
+            child: RoundIconBorder(icon: Icons.edit),
             onTap: () async {
-              //If the left most condition is true, then the next condition won't be checked ...therefore it won't throw null exception.
-              if (title == null || title!.trim().isEmpty) {
+              if (title.trim().isEmpty) {
                 showErrorSnackBar(context, "Title can't be empty");
               } else {
-                //If description is null, then assign it with an empty string before storing in db.
-                description ??= "";
-                Note note = await NotesDatabase.instance.insertNote(
-                  Note(
-                    title: title!,
-                    description: description!,
+                description = description.trim().isEmpty ? "" : description;
+                await NotesDatabase.instance.update(
+                  widget.note.copy(
+                    title: title,
+                    description: description,
                     createdTime: DateTime.now(),
                   ),
                 );
-                Navigator.pop(context, "Saved");
+                Navigator.pop(context, "Updated");
               }
+            },
+          ),
+          getHorizontalSpace(5),
+          InkWell(
+            child: RoundIconBorder(icon: Icons.delete),
+            onTap: () async {
+              await NotesDatabase.instance.delete(widget.note.id!);
+              Navigator.pop(context, "Deleted");
             },
           ),
         ],
@@ -75,4 +81,10 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
       },
     );
   }
+}
+
+class EditNoteScreenArguments {
+  final Note note;
+
+  EditNoteScreenArguments({required this.note});
 }

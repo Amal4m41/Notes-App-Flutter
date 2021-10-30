@@ -10,7 +10,7 @@ import 'package:notes_app/models/note.dart';
 import 'package:notes_app/screens/create_note_screen.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
-import 'note_view_screen.dart';
+import 'edit_note_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = "HomeScreen";
@@ -45,18 +45,22 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(15).copyWith(bottom: 0),
+          // padding: EdgeInsets.all(10).copyWith(bottom: 0),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Notes",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  ),
-                  RoundIconBorder(icon: Icons.search),
-                ],
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15, top: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Notes",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
+                    RoundIconBorder(icon: Icons.search),
+                  ],
+                ),
               ),
               getVerticalSpace(10),
               Expanded(
