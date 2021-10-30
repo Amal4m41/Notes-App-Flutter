@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class RoundIconCard extends StatelessWidget {
+class RoundIconBorder extends StatelessWidget {
   final IconData icon;
 
-  RoundIconCard({required this.icon});
+  RoundIconBorder({required this.icon});
 
   @override
   Widget build(BuildContext context) {

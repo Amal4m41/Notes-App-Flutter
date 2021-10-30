@@ -1,12 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:notes_app/components/custom_progress_indicator.dart';
+
 import 'package:notes_app/components/note_card.dart';
-import 'package:notes_app/components/round_icon_card.dart';
+import 'package:notes_app/components/notes_staggered_grid_view.dart';
+import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
+import 'package:notes_app/screens/create_note_screen.dart';
+import 'package:notes_app/utils/widget_functions.dart';
+
+import 'note_view_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  static const String id = "HomeScreen";
+
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -15,11 +23,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Note> notes = [];
-  List<Note> notesTemp = [];
+  bool isLoading = false;
   NotesDatabase db = NotesDatabase.instance;
 
   Future getNotesFromDB() async {
+    setState(() => isLoading = true);
+    // await Future.delayed(const Duration(seconds: 3), () {});
     notes = await db.readAll();
+    setState(() => isLoading = false);
     print(notes);
   }
 
@@ -44,42 +55,45 @@ class _HomeScreenState extends State<HomeScreen> {
                     "Notes",
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                   ),
-                  RoundIconCard(icon: Icons.search),
+                  RoundIconBorder(icon: Icons.search),
                 ],
               ),
+              getVerticalSpace(15),
               Expanded(
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 4,
-                  itemCount: notes.length,
-                  itemBuilder: (BuildContext context, int index) => NoteCard(
-                      title: notes[index].title,
-                      color: Colors.redAccent.shade200,
-                      createdDate: "November 2021"),
-                  staggeredTileBuilder: (int index) =>
-                      new StaggeredTile.count(2, index.isEven ? 2 : 1),
-                  mainAxisSpacing: 6.0,
-                  crossAxisSpacing: 6.0,
+                child: Stack(
+                  children: [
+                    NotesStaggeredGridView(notesList: notes),
+                    isLoading
+                        ? CustomProgressIndicator(
+                            textMsg: "Loading Notes ...",
+                          )
+                        : const SizedBox(height: 0, width: 0), //Dummy widget.
+                  ],
                 ),
               ),
-              // TextButton(
-              //   onPressed: () async {
-              //     final note = await db.insertNote(
-              //       Note(
-              //         title: "Ronaldo teams",
-              //         description: "Manchester United",
-              //         createdTime: DateTime.now(),
-              //       ),
-              //     );
-              //     print(note.id);
-              //   },
-              //   child: Text("Click me"),
-              // ),
+              TextButton(
+                onPressed: () async {
+                  final note = await db.insertNote(
+                    Note(
+                      title: "Zlatan ibrahimovic",
+                      description: "Manchester United",
+                      createdTime: DateTime.now(),
+                    ),
+                  );
+                  print(note.id);
+
+                  getNotesFromDB();
+                },
+                child: Text("Click me"),
+              ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, CreateNoteScreen.id);
+        },
         child: Icon(Icons.add),
       ),
     );
