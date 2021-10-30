@@ -11,3 +11,15 @@ SizedBox getHorizontalSpace(double value) {
     width: value,
   );
 }
+
+//Error/Warning Snackbar
+
+void showErrorSnackBar(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      duration: const Duration(seconds: 1),
+      content: Text(message),
+      backgroundColor: Colors.red.shade400,
+    ),
+  );
+}

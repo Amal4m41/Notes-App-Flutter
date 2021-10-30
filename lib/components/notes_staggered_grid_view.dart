@@ -12,10 +12,11 @@ class NotesStaggeredGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return StaggeredGridView.countBuilder(
       crossAxisCount: 4,
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
       itemCount: notesList.length,
       itemBuilder: (BuildContext context, int index) => NoteCard(
           title: notesList[index].title,
-          color: Colors.redAccent.shade200,
+          color: Colors.redAccent.shade100,
           createdDate: "November 2021"),
       staggeredTileBuilder: (int index) => const StaggeredTile.fit(2),
       mainAxisSpacing: 6.0,

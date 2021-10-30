@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(15),
+          padding: EdgeInsets.all(15).copyWith(bottom: 0),
           child: Column(
             children: [
               Row(
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   RoundIconBorder(icon: Icons.search),
                 ],
               ),
-              getVerticalSpace(15),
+              getVerticalSpace(10),
               Expanded(
                 child: Stack(
                   children: [
@@ -71,28 +71,32 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              TextButton(
-                onPressed: () async {
-                  final note = await db.insertNote(
-                    Note(
-                      title: "Zlatan ibrahimovic",
-                      description: "Manchester United",
-                      createdTime: DateTime.now(),
-                    ),
-                  );
-                  print(note.id);
-
-                  getNotesFromDB();
-                },
-                child: Text("Click me"),
-              ),
+              // TextButton(
+              //   onPressed: () async {
+              //     final note = await db.insertNote(
+              //       Note(
+              //         title: "Zlatan ibrahimovic",
+              //         description: "Manchester United",
+              //         createdTime: DateTime.now(),
+              //       ),
+              //     );
+              //     print(note.id);
+              //
+              //     getNotesFromDB();
+              //   },
+              //   child: Text("Click me"),
+              // ),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, CreateNoteScreen.id);
+        onPressed: () async {
+          String result =
+              await Navigator.pushNamed(context, CreateNoteScreen.id) as String;
+          if (result == "Saved") {
+            getNotesFromDB();
+          }
         },
         child: Icon(Icons.add),
       ),
