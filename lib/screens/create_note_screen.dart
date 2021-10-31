@@ -5,6 +5,7 @@ import 'package:notes_app/components/note_screen_template.dart';
 import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
+import 'package:notes_app/utils/constants.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
 class CreateNoteScreen extends StatefulWidget {
@@ -69,6 +70,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                       createdTime: DateTime.now(),
                     ),
                   );
+
+                  Navigator.pop(context, DbNoteAction.insert);
                 } else {
                   int result = await NotesDatabase.instance.update(
                     Note(
@@ -78,10 +81,10 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                       createdTime: DateTime.now(),
                     ),
                   );
+                  Navigator.pop(context, DbNoteAction.update);
                 }
                 // print(title);
                 // print(description);
-                Navigator.pop(context, true);
               }
             },
           ),

@@ -5,6 +5,7 @@ import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/screens/create_note_screen.dart';
+import 'package:notes_app/utils/constants.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
 class EditNoteScreen extends StatefulWidget {
@@ -65,14 +66,17 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
                 //   ),
                 // );
                 // Navigator.pop(context, "Updated");
-                print(title);
-                print(description);
-                print(widget.note.id);
-                Navigator.pushNamed(context, CreateNoteScreen.id,
+                // print(title);
+                // print(description);
+                // print(widget.note.id);
+                final DbNoteAction? result = await Navigator.pushNamed(
+                    context, CreateNoteScreen.id,
                     arguments: CreateNoteScreenArguments(
                         title: title,
                         description: description,
-                        noteId: widget.note.id));
+                        noteId: widget.note.id)) as DbNoteAction?;
+
+                Navigator.pop(context, result); //return to homescreen
               }
             },
           ),
@@ -81,7 +85,7 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
             child: RoundIconBorder(icon: Icons.delete),
             onTap: () async {
               await NotesDatabase.instance.delete(widget.note.id!);
-              Navigator.pop(context, true);
+              Navigator.pop(context, DbNoteAction.delete);
             },
           ),
         ],

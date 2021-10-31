@@ -8,6 +8,7 @@ import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/screens/create_note_screen.dart';
+import 'package:notes_app/utils/constants.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
 import 'edit_note_screen.dart';
@@ -71,24 +72,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTapNoteItem: (int itemIndex) async {
                         Note selectedNote = notes[itemIndex];
 
-                        bool? result = await Navigator.pushNamed(
+                        DbNoteAction? result = await Navigator.pushNamed(
                             context, EditNoteScreen.id,
                             arguments: EditNoteScreenArguments(
-                                note: notes[itemIndex])) as bool?;
+                                note: notes[itemIndex])) as DbNoteAction?;
 
-                        if (result == true) {
+                        if (result == DbNoteAction.delete) {
                           getNotesFromDB();
                           showSnackBarWithAction(
                             context: context,
                             message: "You deleted a note!",
                             onPressed: () async {
-                              print("Deleted  : ${selectedNote.id}");
+                              // print("Deleted  : ${selectedNote.id}");
                               await NotesDatabase.instance
                                   .insertNote(selectedNote);
                               getNotesFromDB();
-                              print("YES");
                             },
                           );
+                        } else if (result == DbNoteAction.update) {
+                          getNotesFromDB();
                         }
                       },
                     ),
@@ -121,9 +123,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          bool result = await Navigator.pushNamed(context, CreateNoteScreen.id,
-              arguments: CreateNoteScreenArguments()) as bool;
-          if (result) {
+          //If we user just presses the back button, the screen will popped returning a null
+          DbNoteAction? result = await Navigator.pushNamed(
+              context, CreateNoteScreen.id,
+              arguments: CreateNoteScreenArguments()) as DbNoteAction?;
+          if (result == DbNoteAction.insert) {
             getNotesFromDB();
           }
         },
