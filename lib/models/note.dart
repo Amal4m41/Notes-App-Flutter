@@ -3,12 +3,14 @@ class Note {
   final int? id;
   final String title;
   final String description;
+  final int colorIndex;
   final DateTime createdTime;
 
   Note({
     this.id,
     required this.title,
     required this.description,
+    required this.colorIndex,
     required this.createdTime,
   });
 
@@ -17,6 +19,7 @@ class Note {
         NoteFields.id: id,
         NoteFields.title: title,
         NoteFields.description: description,
+        NoteFields.colorIndex: colorIndex,
         NoteFields.createdTime: createdTime.toIso8601String(),
       };
 
@@ -26,6 +29,7 @@ class Note {
       id: json["_id"] as int?,
       title: json["title"] as String,
       description: json["description"] as String,
+      colorIndex: json["colorIndex"] as int,
       createdTime: DateTime.parse(json["createdTime"] as String),
     );
   }
@@ -35,6 +39,7 @@ class Note {
     int? id,
     String? title,
     String? description,
+    int? colorIndex,
     DateTime? createdTime,
   }) =>
       Note(
@@ -43,6 +48,7 @@ class Note {
         // existing value (i.e the instance which called this method).
         title: title ?? this.title,
         description: description ?? this.description,
+        colorIndex: colorIndex ?? this.colorIndex,
         createdTime: createdTime ?? this.createdTime,
       );
 }
@@ -53,7 +59,14 @@ class NoteFields {
   static const String id = "_id";
   static const String title = "title";
   static const String description = "description";
+  static const String colorIndex = "colorIndex";
   static const String createdTime = "createdTime";
 
-  static const List<String> columns = [id, title, description, createdTime];
+  static const List<String> columns = [
+    id,
+    title,
+    description,
+    colorIndex,
+    createdTime
+  ];
 }

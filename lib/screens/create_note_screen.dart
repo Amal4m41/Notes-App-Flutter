@@ -15,8 +15,13 @@ class CreateNoteScreen extends StatefulWidget {
   final int? noteId;
   final String title;
   final String description;
+  final int colorIndex;
 
-  const CreateNoteScreen({this.title = '', this.description = '', this.noteId});
+  const CreateNoteScreen(
+      {this.title = '',
+      this.description = '',
+      this.noteId,
+      this.colorIndex = 0});
 
   @override
   State<CreateNoteScreen> createState() => _CreateNoteScreenState();
@@ -25,6 +30,7 @@ class CreateNoteScreen extends StatefulWidget {
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  late int selectedColor; //stores the index of the color from color list.
 
   @override
   void initState() {
@@ -32,6 +38,8 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
 
     titleController.text = widget.title;
     descriptionController.text = widget.description;
+    selectedColor = widget.colorIndex;
+    print(selectedColor);
   }
 
   @override
@@ -39,8 +47,13 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
     return NoteScreenTemplate(
       titleController: titleController,
       descriptionController: descriptionController,
-      // title: title,
-      // description: description,
+      selectedColor: noteColors[selectedColor],
+      callback: (Color value) {
+        setState(() {
+          selectedColor = noteColors.indexOf(value);
+        });
+        Navigator.pop(context);
+      },
       toolbar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -67,6 +80,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                     Note(
                       title: title,
                       description: description,
+                      colorIndex: selectedColor,
                       createdTime: DateTime.now(),
                     ),
                   );
@@ -78,6 +92,7 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
                       id: widget.noteId!,
                       title: title,
                       description: description,
+                      colorIndex: selectedColor,
                       createdTime: DateTime.now(),
                     ),
                   );
@@ -98,7 +113,11 @@ class CreateNoteScreenArguments {
   final int? noteId;
   final String title;
   final String description;
+  final int colorIndex;
 
   CreateNoteScreenArguments(
-      {this.title = '', this.description = '', this.noteId});
+      {this.title = '',
+      this.description = '',
+      this.noteId,
+      this.colorIndex = 0});
 }

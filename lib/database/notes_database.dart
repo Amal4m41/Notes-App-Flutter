@@ -39,6 +39,7 @@ class NotesDatabase {
       ${NoteFields.id} $idType,
       ${NoteFields.title} $textType,
       ${NoteFields.description} $textType,
+      ${NoteFields.colorIndex} $integerType,
       ${NoteFields.createdTime} $textType
     )''';
     await db.execute(sql);

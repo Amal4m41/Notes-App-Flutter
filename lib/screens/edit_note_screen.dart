@@ -35,6 +35,8 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
     return NoteScreenTemplate(
       titleController: titleController,
       descriptionController: descriptionController,
+      selectedColor: Colors.white, //Not Used since, editable = false.
+      callback: (Color value) {}, //Not Used since, editable = false.
       editable: false,
       toolbar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -54,30 +56,18 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
               String title = titleController.text;
               String description = descriptionController.text;
 
-              if (title.trim().isEmpty) {
-                showErrorSnackBar(context, "Title can't be empty");
-              } else {
-                description = description.trim().isEmpty ? "" : description;
-                // await NotesDatabase.instance.update(
-                //   widget.note.copy(
-                //     title: title,
-                //     description: description,
-                //     createdTime: DateTime.now(),
-                //   ),
-                // );
-                // Navigator.pop(context, "Updated");
-                // print(title);
-                // print(description);
-                // print(widget.note.id);
-                final DbNoteAction? result = await Navigator.pushNamed(
-                    context, CreateNoteScreen.id,
-                    arguments: CreateNoteScreenArguments(
-                        title: title,
-                        description: description,
-                        noteId: widget.note.id)) as DbNoteAction?;
+              print("CORRECT VALUE : ${widget.note.colorIndex}");
+              final DbNoteAction? result = await Navigator.pushNamed(
+                context,
+                CreateNoteScreen.id,
+                arguments: CreateNoteScreenArguments(
+                    title: title,
+                    description: description,
+                    colorIndex: widget.note.colorIndex,
+                    noteId: widget.note.id),
+              ) as DbNoteAction?;
 
-                Navigator.pop(context, result); //return to homescreen
-              }
+              Navigator.pop(context, result); //return to homescreen
             },
           ),
           getHorizontalSpace(5),

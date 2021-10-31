@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
               return CreateNoteScreen(
                   title: args.title,
                   description: args.description,
+                  colorIndex: args.colorIndex,
                   noteId: args.noteId);
             },
           );

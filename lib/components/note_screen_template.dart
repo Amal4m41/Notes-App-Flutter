@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:notes_app/components/note_color_picker.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
 typedef onChangedTextCallback = void Function(String value);
@@ -8,13 +11,29 @@ class NoteScreenTemplate extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
   final bool editable;
+  final Color selectedColor;
+  final onChangedColorCallback callback;
 
   NoteScreenTemplate({
     required this.titleController,
     required this.descriptionController,
     required this.toolbar,
     this.editable = true,
+    required this.selectedColor,
+    required this.callback,
   });
+
+  void pickColor(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        insetPadding: EdgeInsets.symmetric(vertical: 230, horizontal: 50),
+        title: const Text("Pick Note Color"),
+        content:
+            NoteColorPicker(selectedColor: selectedColor, callback: callback),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,21 +45,53 @@ class NoteScreenTemplate extends StatelessWidget {
           child: Column(
             children: [
               toolbar,
-              TextField(
-                controller: titleController,
-                enabled: editable,
-                // onChanged: onChangedTitleText,
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                decoration: const InputDecoration(
-                  hintText: "Title",
-                  hintStyle:
-                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                  border: UnderlineInputBorder(borderSide: BorderSide.none),
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueGrey)),
-                  // enabledBorder:
-                  //     UnderlineInputBorder(borderSide: BorderSide.none),
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: titleController,
+                      enabled: editable,
+                      // onChanged: onChangedTitleText,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                      decoration: const InputDecoration(
+                        // hintText: "Title",
+                        labelText: "Title",
+                        // floatingLabelStyle: TextStyle(color: Colors.blueGrey),
+                        labelStyle: TextStyle(
+                            textBaseline: TextBaseline.ideographic,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                        border:
+                            UnderlineInputBorder(borderSide: BorderSide.none),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.blueGrey)),
+                        // enabledBorder:
+                        //     UnderlineInputBorder(borderSide: BorderSide.none),
+                      ),
+                    ),
+                  ),
+                  editable
+                      ? InkWell(
+                          onTap: () {
+                            pickColor(context);
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(5),
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: selectedColor,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        )
+                      : const SizedBox(
+                          height: 0,
+                          width: 0,
+                        ),
+                ],
               ),
               getVerticalSpace(5),
               Container(
@@ -48,7 +99,7 @@ class NoteScreenTemplate extends StatelessWidget {
                 //Get the height of the screen - height that'll be occupied by the keyboard when it's active - 160.
                 height: MediaQuery.of(context).size.height -
                     MediaQuery.of(context).viewInsets.bottom -
-                    165,
+                    170,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   border: Border.all(color: Colors.grey, width: 0.09),
