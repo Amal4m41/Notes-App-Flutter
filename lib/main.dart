@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
       initialRoute: HomeScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
-        CreateNoteScreen.id: (context) => CreateNoteScreen(),
       },
       //For named routes with parameters.
       onGenerateRoute: (settings) {
@@ -37,6 +36,18 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return EditNoteScreen(note: args.note);
+            },
+          );
+        }
+        if (settings.name == CreateNoteScreen.id) {
+          final args = settings.arguments as CreateNoteScreenArguments;
+
+          return MaterialPageRoute(
+            builder: (context) {
+              return CreateNoteScreen(
+                  title: args.title,
+                  description: args.description,
+                  noteId: args.noteId);
             },
           );
         }

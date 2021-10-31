@@ -4,10 +4,14 @@ import 'package:notes_app/models/note.dart';
 import 'note_card.dart';
 import 'package:notes_app/screens/edit_note_screen.dart';
 
+typedef onTapNoteItemCallback = void Function(int itemIndex);
+
 class NotesStaggeredGridView extends StatelessWidget {
   final List<Note> notesList;
+  final onTapNoteItemCallback onTapNoteItem;
 
-  NotesStaggeredGridView({required this.notesList});
+  NotesStaggeredGridView(
+      {required this.notesList, required this.onTapNoteItem});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +21,7 @@ class NotesStaggeredGridView extends StatelessWidget {
       itemCount: notesList.length,
       itemBuilder: (BuildContext context, int index) => InkWell(
         onTap: () {
-          Navigator.pushNamed(context, EditNoteScreen.id,
-              arguments: EditNoteScreenArguments(note: notesList[index]));
+          onTapNoteItem(index);
         },
         child: NoteCard(
             title: notesList[index].title,

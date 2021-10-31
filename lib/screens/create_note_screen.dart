@@ -10,32 +10,36 @@ import 'package:notes_app/utils/widget_functions.dart';
 class CreateNoteScreen extends StatefulWidget {
   static const String id = "CreateNoteScreen";
 
-  final String? title;
-  final String? description;
+  //If note id it passed then it's an update operation instead of create.
+  final int? noteId;
+  final String title;
+  final String description;
 
-  const CreateNoteScreen({this.title = null, this.description = null});
+  const CreateNoteScreen({this.title = '', this.description = '', this.noteId});
 
   @override
   State<CreateNoteScreen> createState() => _CreateNoteScreenState();
 }
 
 class _CreateNoteScreenState extends State<CreateNoteScreen> {
-  String? title;
-  String? description;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    title = widget.title;
-    description = widget.description;
+    titleController.text = widget.title;
+    descriptionController.text = widget.description;
   }
 
   @override
   Widget build(BuildContext context) {
     return NoteScreenTemplate(
-      title: title,
-      description: description,
+      titleController: titleController,
+      descriptionController: descriptionController,
+      // title: title,
+      // description: description,
       toolbar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -48,31 +52,50 @@ class _CreateNoteScreenState extends State<CreateNoteScreen> {
           InkWell(
             child: CapsuleTextBorder(text: "Save"),
             onTap: () async {
+              String title = titleController.text;
+              String description = descriptionController.text;
               //If the left most condition is true, then the next condition won't be checked ...therefore it won't throw null exception.
-              if (title == null || title!.trim().isEmpty) {
+              if (title.trim().isEmpty) {
                 showErrorSnackBar(context, "Title can't be empty");
               } else {
-                //If description is null, then assign it with an empty string before storing in db.
-                description ??= "";
-                Note note = await NotesDatabase.instance.insertNote(
-                  Note(
-                    title: title!,
-                    description: description!,
-                    createdTime: DateTime.now(),
-                  ),
-                );
-                Navigator.pop(context, "Saved");
+                //If the string just container white spaces then replace it with an empty string to save storage.
+                description = description.trim().isEmpty ? '' : description;
+
+                if (widget.noteId == null) {
+                  Note note = await NotesDatabase.instance.insertNote(
+                    Note(
+                      title: title,
+                      description: description,
+                      createdTime: DateTime.now(),
+                    ),
+                  );
+                } else {
+                  int result = await NotesDatabase.instance.update(
+                    Note(
+                      id: widget.noteId!,
+                      title: title,
+                      description: description,
+                      createdTime: DateTime.now(),
+                    ),
+                  );
+                }
+                // print(title);
+                // print(description);
+                Navigator.pop(context, true);
               }
             },
           ),
         ],
       ),
-      onChangedTitleText: (String titleValue) {
-        title = titleValue;
-      },
-      onChangedDescriptionText: (String descriptionValue) {
-        description = descriptionValue;
-      },
     );
   }
+}
+
+class CreateNoteScreenArguments {
+  final int? noteId;
+  final String title;
+  final String description;
+
+  CreateNoteScreenArguments(
+      {this.title = '', this.description = '', this.noteId});
 }

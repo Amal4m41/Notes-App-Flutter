@@ -23,3 +23,17 @@ void showErrorSnackBar(BuildContext context, String message) {
     ),
   );
 }
+
+void showSnackBarWithAction(
+    {required BuildContext context,
+    required String message,
+    required VoidCallback onPressed}) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      duration: const Duration(seconds: 2),
+      content: Text(message),
+      backgroundColor: Colors.red,
+      action: SnackBarAction(label: "Undo", onPressed: onPressed),
+    ),
+  );
+}

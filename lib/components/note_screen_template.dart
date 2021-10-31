@@ -4,18 +4,16 @@ import 'package:notes_app/utils/widget_functions.dart';
 typedef onChangedTextCallback = void Function(String value);
 
 class NoteScreenTemplate extends StatelessWidget {
-  final String? title;
-  final String? description;
   final Row toolbar;
-  final onChangedTextCallback onChangedTitleText;
-  final onChangedTextCallback onChangedDescriptionText;
+  final TextEditingController titleController;
+  final TextEditingController descriptionController;
+  final bool editable;
 
   NoteScreenTemplate({
-    required this.title,
-    required this.description,
+    required this.titleController,
+    required this.descriptionController,
     required this.toolbar,
-    required this.onChangedTitleText,
-    required this.onChangedDescriptionText,
+    this.editable = true,
   });
 
   @override
@@ -29,16 +27,20 @@ class NoteScreenTemplate extends StatelessWidget {
             children: [
               toolbar,
               TextField(
-                onChanged: onChangedTitleText,
+                controller: titleController,
+                enabled: editable,
+                // onChanged: onChangedTitleText,
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 decoration: const InputDecoration(
-                    hintText: "Title",
-                    hintStyle:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blueGrey)),
-                    enabledBorder:
-                        UnderlineInputBorder(borderSide: BorderSide.none)),
+                  hintText: "Title",
+                  hintStyle:
+                      TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  border: UnderlineInputBorder(borderSide: BorderSide.none),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blueGrey)),
+                  // enabledBorder:
+                  //     UnderlineInputBorder(borderSide: BorderSide.none),
+                ),
               ),
               getVerticalSpace(5),
               Container(
@@ -54,18 +56,22 @@ class NoteScreenTemplate extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: SingleChildScrollView(
                   child: TextField(
-                    onChanged: onChangedDescriptionText,
+                    controller: descriptionController,
+                    enabled: editable,
+                    // onChanged: onChangedDescriptionText,
                     style: const TextStyle(color: Colors.white),
                     keyboardType: TextInputType
                         .multiline, //maxlines = true is needed for this to work
                     maxLines: null, //no limit on the number of lines.
                     decoration: const InputDecoration(
-                        hintText: "Type note here.. ✍",
-                        hintStyle: TextStyle(fontSize: 16),
-                        focusedBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none),
-                        enabledBorder:
-                            UnderlineInputBorder(borderSide: BorderSide.none)),
+                      hintText: "Type note here.. ✍",
+                      hintStyle: TextStyle(fontSize: 16),
+                      border: UnderlineInputBorder(borderSide: BorderSide.none),
+                      // focusedBorder:
+                      //     UnderlineInputBorder(borderSide: BorderSide.none),
+                      // enabledBorder:
+                      //     UnderlineInputBorder(borderSide: BorderSide.none),
+                    ),
                   ),
                 ),
               ),

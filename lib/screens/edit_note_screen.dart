@@ -4,6 +4,7 @@ import 'package:notes_app/components/note_screen_template.dart';
 import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
+import 'package:notes_app/screens/create_note_screen.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
 class EditNoteScreen extends StatefulWidget {
@@ -18,21 +19,22 @@ class EditNoteScreen extends StatefulWidget {
 }
 
 class _EditNoteScreenState extends State<EditNoteScreen> {
-  late String title;
-  late String description;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    title = widget.note.title;
-    description = widget.note.description;
+    titleController.text = widget.note.title;
+    descriptionController.text = widget.note.description;
   }
 
   @override
   Widget build(BuildContext context) {
     return NoteScreenTemplate(
-      title: title,
-      description: description,
+      titleController: titleController,
+      descriptionController: descriptionController,
+      editable: false,
       toolbar: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -48,18 +50,29 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
           InkWell(
             child: RoundIconBorder(icon: Icons.edit),
             onTap: () async {
+              String title = titleController.text;
+              String description = descriptionController.text;
+
               if (title.trim().isEmpty) {
                 showErrorSnackBar(context, "Title can't be empty");
               } else {
                 description = description.trim().isEmpty ? "" : description;
-                await NotesDatabase.instance.update(
-                  widget.note.copy(
-                    title: title,
-                    description: description,
-                    createdTime: DateTime.now(),
-                  ),
-                );
-                Navigator.pop(context, "Updated");
+                // await NotesDatabase.instance.update(
+                //   widget.note.copy(
+                //     title: title,
+                //     description: description,
+                //     createdTime: DateTime.now(),
+                //   ),
+                // );
+                // Navigator.pop(context, "Updated");
+                print(title);
+                print(description);
+                print(widget.note.id);
+                Navigator.pushNamed(context, CreateNoteScreen.id,
+                    arguments: CreateNoteScreenArguments(
+                        title: title,
+                        description: description,
+                        noteId: widget.note.id));
               }
             },
           ),
@@ -68,17 +81,11 @@ class _EditNoteScreenState extends State<EditNoteScreen> {
             child: RoundIconBorder(icon: Icons.delete),
             onTap: () async {
               await NotesDatabase.instance.delete(widget.note.id!);
-              Navigator.pop(context, "Deleted");
+              Navigator.pop(context, true);
             },
           ),
         ],
       ),
-      onChangedTitleText: (String titleValue) {
-        title = titleValue;
-      },
-      onChangedDescriptionText: (String descriptionValue) {
-        description = descriptionValue;
-      },
     );
   }
 }

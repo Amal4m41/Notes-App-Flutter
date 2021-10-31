@@ -30,8 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => isLoading = true);
     // await Future.delayed(const Duration(seconds: 3), () {});
     notes = await db.readAll();
+    print(notes.map((e) => e.id).toList());
     setState(() => isLoading = false);
-    print(notes);
   }
 
   @override
@@ -66,7 +66,32 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Stack(
                   children: [
-                    NotesStaggeredGridView(notesList: notes),
+                    NotesStaggeredGridView(
+                      notesList: notes,
+                      onTapNoteItem: (int itemIndex) async {
+                        Note selectedNote = notes[itemIndex];
+
+                        bool? result = await Navigator.pushNamed(
+                            context, EditNoteScreen.id,
+                            arguments: EditNoteScreenArguments(
+                                note: notes[itemIndex])) as bool?;
+
+                        if (result == true) {
+                          getNotesFromDB();
+                          showSnackBarWithAction(
+                            context: context,
+                            message: "You deleted a note!",
+                            onPressed: () async {
+                              print("Deleted  : ${selectedNote.id}");
+                              await NotesDatabase.instance
+                                  .insertNote(selectedNote);
+                              getNotesFromDB();
+                              print("YES");
+                            },
+                          );
+                        }
+                      },
+                    ),
                     isLoading
                         ? CustomProgressIndicator(
                             textMsg: "Loading Notes ...",
@@ -96,9 +121,9 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          String result =
-              await Navigator.pushNamed(context, CreateNoteScreen.id) as String;
-          if (result == "Saved") {
+          bool result = await Navigator.pushNamed(context, CreateNoteScreen.id,
+              arguments: CreateNoteScreenArguments()) as bool;
+          if (result) {
             getNotesFromDB();
           }
         },

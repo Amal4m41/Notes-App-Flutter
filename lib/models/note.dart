@@ -23,7 +23,7 @@ class Note {
   //Converts the json/map object to a note object
   static Note fromJson({required Map json}) {
     return Note(
-      id: json["id"] as int?,
+      id: json["_id"] as int?,
       title: json["title"] as String,
       description: json["description"] as String,
       createdTime: DateTime.parse(json["createdTime"] as String),
