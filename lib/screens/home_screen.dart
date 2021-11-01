@@ -6,6 +6,7 @@ import 'package:notes_app/components/note_card.dart';
 import 'package:notes_app/components/notes_empty_message.dart';
 import 'package:notes_app/components/notes_staggered_grid_view.dart';
 import 'package:notes_app/components/round_icon_border.dart';
+import 'package:notes_app/components/search_box.dart';
 import 'package:notes_app/database/notes_database.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/screens/create_note_screen.dart';
@@ -25,7 +26,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Note> notes = [];
+  List<Note> searchedNotes = [];
   bool isLoading = false;
+  bool isSearching = false;
   NotesDatabase db = NotesDatabase.instance;
 
   Future getNotesFromDB() async {
@@ -33,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // await Future.delayed(const Duration(seconds: 3), () {});
     notes = await db.readAll();
     print(notes.map((e) => e.id).toList());
+    searchForNotes('');
     setState(() => isLoading = false);
   }
 
@@ -60,25 +64,41 @@ class _HomeScreenState extends State<HomeScreen> {
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
-                    RoundIconBorder(icon: Icons.search),
+                    InkWell(
+                      onTap: () {
+                        setState(() => isSearching = !isSearching);
+                      },
+                      child: RoundIconBorder(
+                          icon: isSearching ? Icons.search_off : Icons.search),
+                    ),
                   ],
                 ),
               ),
               getVerticalSpace(10),
+              isSearching
+                  ? SearchBox(
+                      callback: (String searchText) {
+                        print(searchText);
+                        print(notes);
+                        searchForNotes(searchText);
+                      },
+                    )
+                  : const SizedBox(height: 0, width: 0),
               Expanded(
                 child: notes.isEmpty
                     ? NotesEmptyMessage()
                     : Stack(
                         children: [
                           NotesStaggeredGridView(
-                            notesList: notes,
+                            notesList: searchedNotes,
                             onTapNoteItem: (int itemIndex) async {
-                              Note selectedNote = notes[itemIndex];
+                              Note selectedNote = searchedNotes[itemIndex];
 
                               DbNoteAction? result = await Navigator.pushNamed(
-                                  context, EditNoteScreen.id,
-                                  arguments: EditNoteScreenArguments(
-                                      note: notes[itemIndex])) as DbNoteAction?;
+                                      context, EditNoteScreen.id,
+                                      arguments: EditNoteScreenArguments(
+                                          note: searchedNotes[itemIndex]))
+                                  as DbNoteAction?;
 
                               if (result == DbNoteAction.delete) {
                                 getNotesFromDB();
@@ -123,5 +143,17 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void searchForNotes(String noteName) {
+    List<Note> result = notes
+        .where(
+            (note) => note.title.toLowerCase().contains(noteName.toLowerCase()))
+        .toList();
+    setState(() {
+      searchedNotes = result;
+      print("notes : $notes");
+      print(searchedNotes);
+    });
   }
 }
