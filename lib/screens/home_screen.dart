@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:notes_app/components/custom_progress_indicator.dart';
 
 import 'package:notes_app/components/note_card.dart';
+import 'package:notes_app/components/notes_empty_message.dart';
 import 'package:notes_app/components/notes_staggered_grid_view.dart';
 import 'package:notes_app/components/round_icon_border.dart';
 import 'package:notes_app/database/notes_database.dart';
@@ -65,58 +66,46 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               getVerticalSpace(10),
               Expanded(
-                child: Stack(
-                  children: [
-                    NotesStaggeredGridView(
-                      notesList: notes,
-                      onTapNoteItem: (int itemIndex) async {
-                        Note selectedNote = notes[itemIndex];
+                child: notes.isEmpty
+                    ? NotesEmptyMessage()
+                    : Stack(
+                        children: [
+                          NotesStaggeredGridView(
+                            notesList: notes,
+                            onTapNoteItem: (int itemIndex) async {
+                              Note selectedNote = notes[itemIndex];
 
-                        DbNoteAction? result = await Navigator.pushNamed(
-                            context, EditNoteScreen.id,
-                            arguments: EditNoteScreenArguments(
-                                note: notes[itemIndex])) as DbNoteAction?;
+                              DbNoteAction? result = await Navigator.pushNamed(
+                                  context, EditNoteScreen.id,
+                                  arguments: EditNoteScreenArguments(
+                                      note: notes[itemIndex])) as DbNoteAction?;
 
-                        if (result == DbNoteAction.delete) {
-                          getNotesFromDB();
-                          showSnackBarWithAction(
-                            context: context,
-                            message: "You deleted a note!",
-                            onPressed: () async {
-                              // print("Deleted  : ${selectedNote.id}");
-                              await NotesDatabase.instance
-                                  .insertNote(selectedNote);
-                              getNotesFromDB();
+                              if (result == DbNoteAction.delete) {
+                                getNotesFromDB();
+                                showSnackBarWithAction(
+                                  context: context,
+                                  message: "You deleted a note!",
+                                  onPressed: () async {
+                                    // print("Deleted  : ${selectedNote.id}");
+                                    await NotesDatabase.instance
+                                        .insertNote(selectedNote);
+                                    getNotesFromDB();
+                                  },
+                                );
+                              } else if (result == DbNoteAction.update) {
+                                getNotesFromDB();
+                              }
                             },
-                          );
-                        } else if (result == DbNoteAction.update) {
-                          getNotesFromDB();
-                        }
-                      },
-                    ),
-                    isLoading
-                        ? CustomProgressIndicator(
-                            textMsg: "Loading Notes ...",
-                          )
-                        : const SizedBox(height: 0, width: 0), //Dummy widget.
-                  ],
-                ),
+                          ),
+                          isLoading
+                              ? CustomProgressIndicator(
+                                  textMsg: "Loading Notes ...",
+                                )
+                              : const SizedBox(
+                                  height: 0, width: 0), //Dummy widget.
+                        ],
+                      ),
               ),
-              // TextButton(
-              //   onPressed: () async {
-              //     final note = await db.insertNote(
-              //       Note(
-              //         title: "Zlatan ibrahimovic",
-              //         description: "Manchester United",
-              //         createdTime: DateTime.now(),
-              //       ),
-              //     );
-              //     print(note.id);
-              //
-              //     getNotesFromDB();
-              //   },
-              //   child: Text("Click me"),
-              // ),
             ],
           ),
         ),

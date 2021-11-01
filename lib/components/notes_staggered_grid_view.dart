@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:intl/intl.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/utils/constants.dart';
 import 'note_card.dart';
@@ -27,7 +28,8 @@ class NotesStaggeredGridView extends StatelessWidget {
         child: NoteCard(
             title: notesList[index].title,
             color: noteColors[notesList[index].colorIndex],
-            createdDate: "November 2021"),
+            createdDate:
+                DateFormat.yMMMd().format(notesList[index].createdTime)),
       ),
       staggeredTileBuilder: (int index) => const StaggeredTile.fit(2),
       mainAxisSpacing: 6.0,
