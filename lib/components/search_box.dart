@@ -21,17 +21,30 @@ class _SearchBoxState extends State<SearchBox> {
 
   @override
   Widget build(BuildContext context) {
+    // print("SEARCH BOX SCREEN");
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: TextField(
+        autofocus: true,
         controller: searchController,
         onChanged: (_) {
           // print(searchController.text);
           widget.callback(searchController.text);
-          setState(() {});
+          //No need to call setState() here, cuz the parent widget call setState after the above callback. Since the parent widget
+          //is rebuilt, SearchBox being it's child widget is rebuilt too.
+          // setState(() {});
         },
         decoration: InputDecoration(
-          suffixIcon: searchController.text.isEmpty ? null : Icon(Icons.clear),
+          suffixIcon: searchController.text.isEmpty
+              ? null
+              : InkWell(
+                  onTap: () {
+                    searchController.clear();
+                    widget.callback(
+                        ''); //so that all list notes will be displayed.
+                  },
+                  child: Icon(Icons.clear),
+                ),
           border: OutlineInputBorder(),
           hintText: "Search for notes",
         ),

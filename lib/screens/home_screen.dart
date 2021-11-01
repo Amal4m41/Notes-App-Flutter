@@ -36,7 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
     // await Future.delayed(const Duration(seconds: 3), () {});
     notes = await db.readAll();
     print(notes.map((e) => e.id).toList());
-    searchForNotes('');
+    //Passing list value instead of reference, basically creating a new copy of the list.
+    searchedNotes = notes.toList();
+    isSearching = false;
     setState(() => isLoading = false);
   }
 
@@ -48,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("HOME SCREEN");
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -66,7 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     InkWell(
                       onTap: () {
-                        setState(() => isSearching = !isSearching);
+                        setState(() {
+                          isSearching = !isSearching;
+                          //When the search option is switched off, display the entire notes list.
+                          !isSearching ? searchedNotes = notes.toList() : null;
+                        });
                       },
                       child: RoundIconBorder(
                           icon: isSearching ? Icons.search_off : Icons.search),
@@ -79,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? SearchBox(
                       callback: (String searchText) {
                         print(searchText);
-                        print(notes);
+                        // print(notes);
                         searchForNotes(searchText);
                       },
                     )
