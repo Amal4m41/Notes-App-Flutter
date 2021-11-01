@@ -23,7 +23,7 @@ class _SearchBoxState extends State<SearchBox> {
   Widget build(BuildContext context) {
     // print("SEARCH BOX SCREEN");
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: TextField(
         autofocus: true,
         controller: searchController,
@@ -35,6 +35,7 @@ class _SearchBoxState extends State<SearchBox> {
           // setState(() {});
         },
         decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 10),
           suffixIcon: searchController.text.isEmpty
               ? null
               : InkWell(
@@ -43,10 +44,16 @@ class _SearchBoxState extends State<SearchBox> {
                     widget.callback(
                         ''); //so that all list notes will be displayed.
                   },
-                  child: Icon(Icons.clear),
+                  child: const Icon(
+                    Icons.clear,
+                    color: Colors.grey,
+                  ),
                 ),
-          border: OutlineInputBorder(),
-          hintText: "Search for notes",
+          border: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey)),
+          focusedBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.grey)),
+          hintText: "Search for notes by title",
         ),
       ),
     );

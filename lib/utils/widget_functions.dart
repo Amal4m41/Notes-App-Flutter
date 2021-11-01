@@ -18,7 +18,7 @@ void showErrorSnackBar(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       duration: const Duration(seconds: 1),
-      content: Text(message),
+      content: Text(message, style: const TextStyle(color: Colors.white)),
       backgroundColor: Colors.red.shade400,
     ),
   );
@@ -30,10 +30,18 @@ void showSnackBarWithAction(
     required VoidCallback onPressed}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
+      elevation: 10,
       duration: const Duration(seconds: 2),
-      content: Text(message),
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.white),
+      ),
       backgroundColor: Colors.red,
-      action: SnackBarAction(label: "Undo", onPressed: onPressed),
+      action: SnackBarAction(
+        label: "Undo",
+        onPressed: onPressed,
+        textColor: Colors.white,
+      ),
     ),
   );
 }

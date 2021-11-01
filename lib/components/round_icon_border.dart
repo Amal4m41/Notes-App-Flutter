@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class RoundIconBorder extends StatelessWidget {
   final IconData icon;
+  final Color iconColor;
 
-  RoundIconBorder({required this.icon});
+  RoundIconBorder({required this.icon, this.iconColor = Colors.white});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class RoundIconBorder extends StatelessWidget {
       ),
       child: Icon(
         icon,
-        color: Colors.white,
+        color: iconColor,
         size: 30,
       ),
     );

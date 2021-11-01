@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/utils/constants.dart';
 import 'note_card.dart';
-import 'package:notes_app/screens/edit_note_screen.dart';
+import 'package:notes_app/screens/view_note_screen.dart';
 
 typedef onTapNoteItemCallback = void Function(int itemIndex);
 
@@ -32,8 +32,8 @@ class NotesStaggeredGridView extends StatelessWidget {
                 DateFormat.yMMMd().format(notesList[index].createdTime)),
       ),
       staggeredTileBuilder: (int index) => const StaggeredTile.fit(2),
-      mainAxisSpacing: 6.0,
-      crossAxisSpacing: 6.0,
+      mainAxisSpacing: 7.0,
+      crossAxisSpacing: 7.0,
     );
   }
 }

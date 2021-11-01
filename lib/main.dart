@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes_app/screens/create_note_screen.dart';
 import 'package:notes_app/screens/home_screen.dart';
-import 'package:notes_app/screens/edit_note_screen.dart';
+import 'package:notes_app/screens/view_note_screen.dart';
 
 import 'models/note.dart';
 
@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
       initialRoute: HomeScreen.id,
       routes: {
         HomeScreen.id: (context) => HomeScreen(),
@@ -25,17 +26,17 @@ class MyApp extends StatelessWidget {
       //For named routes with parameters.
       onGenerateRoute: (settings) {
         // If you push the PassArguments route
-        if (settings.name == EditNoteScreen.id) {
+        if (settings.name == ViewNoteScreen.id) {
           // Cast the arguments to the correct
           // type: ScreenArguments.
-          final args = settings.arguments as EditNoteScreenArguments;
+          final args = settings.arguments as ViewNoteScreenArguments;
 
           // Then, extract the required data from
           // the arguments and pass the data to the
           // correct screen.
           return MaterialPageRoute(
             builder: (context) {
-              return EditNoteScreen(note: args.note);
+              return ViewNoteScreen(note: args.note);
             },
           );
         }

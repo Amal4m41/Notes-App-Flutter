@@ -23,11 +23,14 @@ class NoteCard extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-                fontSize: 20, color: Colors.black, fontWeight: FontWeight.w400),
+                fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500),
           ),
           getVerticalSpace(10),
           Text(createdDate,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade700)),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade800,
+                  fontWeight: FontWeight.w400)),
         ],
       ),
     );

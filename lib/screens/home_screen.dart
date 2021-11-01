@@ -13,7 +13,7 @@ import 'package:notes_app/screens/create_note_screen.dart';
 import 'package:notes_app/utils/constants.dart';
 import 'package:notes_app/utils/widget_functions.dart';
 
-import 'edit_note_screen.dart';
+import 'view_note_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String id = "HomeScreen";
@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("HOME SCREEN");
+    // print("HOME SCREEN");
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       "Notes",
                       style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
                     ),
                     InkWell(
                       onTap: () {
@@ -102,8 +102,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               Note selectedNote = searchedNotes[itemIndex];
 
                               DbNoteAction? result = await Navigator.pushNamed(
-                                      context, EditNoteScreen.id,
-                                      arguments: EditNoteScreenArguments(
+                                      context, ViewNoteScreen.id,
+                                      arguments: ViewNoteScreenArguments(
                                           note: searchedNotes[itemIndex]))
                                   as DbNoteAction?;
 
@@ -138,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueGrey.shade700,
         onPressed: () async {
           //If we user just presses the back button, the screen will popped returning a null
           DbNoteAction? result = await Navigator.pushNamed(
@@ -147,7 +148,11 @@ class _HomeScreenState extends State<HomeScreen> {
             getNotesFromDB();
           }
         },
-        child: Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 35,
+        ),
       ),
     );
   }
